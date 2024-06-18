@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nc13.mappers.UserMapper">
+    <!-- userDTO 는 mybatis-config 에서 typeAlias 적용한 대상을 의미 -->
+
+    <select id="auth" parameterType="userDTO" resultType="userDTO">
+        SELECT * FROM user
+        WHERE username = #{username} AND <!-- #{} = 동일한 이름의 필드에 해당 값 자동 대입 -->
+        password = #{password}
+    </select>
+
+    <select id="selectByUsername" parameterType="userDTO" resultType="userDTO">
+        SELECT * FROM user
+        WHERE username = #{username}
+    </select>
+
+    <insert id="register" parameterType="userDTO">
+        INSERT INTO user(username, password, nickname)
+        VALUES(#{username}, #{password}, #{nickname})
+    </insert>
+
+</mapper>
