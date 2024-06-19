@@ -38,7 +38,7 @@ public class MyBatisConfig {
     }
 
     @Bean
-    // sqlSessionTemplate = 매개(sqlSessionFactory)를 토대로 Template 구조로 형상화함
+    // sqlSessionTemplate = Template 구조에 Factory 값으로 초기화
     public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }

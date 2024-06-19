@@ -19,4 +19,16 @@ public class BoardService {
     public List<BoardDTO> selectAll() {
         return session.selectList(NAMESPACE + ".selectAll");
     }
+
+    public void insert(BoardDTO boardDTO) {
+        session.insert(NAMESPACE + ".insert", boardDTO);
+    }
+
+    public BoardDTO selectOne(int id) {
+        return session.selectOne(NAMESPACE + ".selectOne", id);
+    }
+
+    public void update(BoardDTO attempt) {
+        session.update(NAMESPACE + ".update", attempt);
+    }
 }

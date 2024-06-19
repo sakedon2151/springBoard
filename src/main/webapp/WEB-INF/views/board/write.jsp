@@ -1,7 +1,7 @@
 <%@page language="java" contentType="text/html; charset=UTF-8"%>
 <html>
 <head>
-    <title>에러</title>
+    <title>새 글 작성하기</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet"
@@ -16,19 +16,27 @@
 <body>
 
     <div class="container-fluid">
-        <div class="main h-100">
+        <form action="/board/write" method="post">
 
-            <div class="row justify-content-center mt-5">
-                <div class="col-4 text-center">
-                    <h1>${message}</h1> <%-- model 값 불러오기 --%>
+            <div class="row justify-content-center">
+                <div class="col-8 mb-3">
+                    <input type="text" class="form-control" id="input_title" name="title" placeholder="제목">
                 </div>
             </div>
 
             <div class="row justify-content-center">
-                <div class="col-4 text-center btn btn-outline-danger" onclick="javascript:history.go(-1)">뒤로가기</div>
+                <div class="col-8 mb-3">
+                    <textarea name="content" id="input_content" class="form-control" placeholder="내용"></textarea>
+                </div>
             </div>
 
-        </div>
+            <div class="row justify-content-center">
+                <div class="col-8">
+                    <input type="submit" class="btn btn-outline-primary w-100" value="작성하기">
+                </div>
+            </div>
+
+        </form>
     </div>
 
 </body>
