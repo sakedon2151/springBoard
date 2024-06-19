@@ -4,7 +4,6 @@ import com.nc13.springBoard.model.BoardDTO;
 import com.nc13.springBoard.model.UserDTO;
 import com.nc13.springBoard.service.BoardService;
 import jakarta.servlet.http.HttpSession;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -132,6 +131,47 @@ public class BoardController {
         return "redirect:/board/showOne/" + id;
     }
 
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
+        UserDTO logIn = (UserDTO) session.getAttribute("logIn");
+        if (logIn == null) {
+            return "redirect:/";
+        }
 
+        BoardDTO boardDTO = boardService.selectOne(id);
+
+        if (boardDTO == null) {
+            redirectAttributes.addFlashAttribute("message", "존재하지 않는 게시물 입니다.");
+            return "redirect:/showMessage";
+        }
+
+        if (boardDTO.getWriterId() != logIn.getId()) {
+            redirectAttributes.addFlashAttribute("message", "권한이 없습니다.");
+            return "redirect:/showMessage";
+        }
+
+        boardService.delete(id);
+
+        return "redirect:/board/showAll";
+    }
+
+    // 해당 코드는 test 를 위해 게시글 300개를 작성합니다.
+//    @GetMapping("test")
+//    public String test(HttpSession session) {
+//        UserDTO logIn = (UserDTO) session.getAttribute("logIn");
+//        if (logIn == null) {
+//            return "redirect:/";
+//        }
+//
+//        for (int i = 1; i <= 300; i++) {
+//            BoardDTO boardDTO = new BoardDTO();
+//            boardDTO.setTitle("테스트 제목" + i);
+//            boardDTO.setContent("테스트 " + i + "번 글 내용입니다.");
+//            boardDTO.setWriterId(logIn.getId());
+//            boardService.insert(boardDTO);
+//        }
+//
+//        return "redirect:/board/showAll";
+//    }
 
 }
