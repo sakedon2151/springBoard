@@ -37,6 +37,7 @@ public class ReplyController {
         replyDTO.setWriterId(logIn.getId()); // 위 검증을 통과하여 로그인 한 유저 id 가 유효하니 set 해준다.
         replyDTO.setBoardId(boardId); // 위 검증을 통과하여 게시물의 id 가 유효하니 set 해준다.
 
+        replyService.insert(replyDTO);
 
         return "redirect:/board/showOne/" + boardId;
     }

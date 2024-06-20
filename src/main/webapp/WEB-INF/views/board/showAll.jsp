@@ -19,6 +19,10 @@
         .clickableTr{
             cursor: pointer;
         }
+        .clickableTr:hover{}
+        .clickableTr>td{
+            transition: color 0.3s ease-in-out;
+        }
         .clickableTr:hover>td{
             color: blue;
             text-decoration: underline;

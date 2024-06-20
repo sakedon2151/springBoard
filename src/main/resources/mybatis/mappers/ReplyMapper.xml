@@ -5,7 +5,10 @@
 <mapper namespace="com.nc13.mappers.ReplyMapper">
     <select id="selectAll" resultType="replyDTO" parameterType="int">
         SELECT * FROM reply
+        INNER JOIN user
+        ON reply.writer_id = user.id
         WHERE board_id = #{boardId}
+        ORDER BY reply.id ASC
     </select>
 
     <select id="selectOne" resultType="replyDTO" parameterType="int">

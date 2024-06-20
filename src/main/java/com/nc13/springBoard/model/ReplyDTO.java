@@ -11,5 +11,6 @@ public class ReplyDTO {
     private Date entryDate;
     private Date modifyDate;
     private int writerId;
+    private String nickname;
     private int boardId;
 }
