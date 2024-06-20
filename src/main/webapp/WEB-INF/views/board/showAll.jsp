@@ -62,6 +62,7 @@
                             <th>작성자</th>
                             <th>작성일</th>
                         </tr>
+
                         <c:forEach items="${list}" var="b">
                             <tr class="clickableTr" onclick="javascript:location.href='/board/showOne/${b.id}'"> <%-- onclick action --%>
                                 <td>${b.id}</td>
@@ -70,6 +71,18 @@
                                 <td><fmt:formatDate value="${b.entryDate}" pattern = "yyMMdd HH:mm:ss"/></td>
                             </tr>
                         </c:forEach>
+
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <a href="/board/showAll/1"> << </a>
+                                <a> < </a>
+                                <c:forEach var="page" begin="1" end="5">
+                                    <a href="/board/showAll/${page}">${page}</a>
+                                </c:forEach>
+                                <a> > </a>
+                                <a> >> </a>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>

@@ -23,13 +23,74 @@ public class BoardController {
     private BoardService boardService;
 
     @GetMapping("showAll")
-    public String showAll(HttpSession session, Model model) {
+    public String moveToFirstPage() {
+        return "redirect:/board/showAll/1";
+    }
+
+    @GetMapping("showAll/{pageNo}")
+    public String showAll(HttpSession session, Model model, @PathVariable int pageNo) {
         UserDTO logIn = (UserDTO) session.getAttribute("logIn");
         if (logIn == null) {
             return "redirect:/";
         }
 
-        List<BoardDTO> list = boardService.selectAll();
+        // 가장 마지막 페이지의 번호
+        int maxPage = boardService.selectMaxPage();
+        model.addAttribute("maxPage", maxPage);
+
+        // --- 페이지네이션 ---
+        // -> 여러 게시글이 있을 경우
+        // 페이지 단위로 끊어서 보여준다.
+        // 예시: 300개의 게시글이 있을 경우
+        // 15개의 페이지로 나눈다면 한 페이지에 들어가는 글의 갯수 = 20개
+        // 글의 갯수가 147개인 페이지의 총 갯수 = 8개
+
+        // --- 페이지네이션의 주된 생김새 ---
+        // << < 1 2 [3] 4 5 > >>
+        // <<, >>: 맨 앞 뒤
+        // <, >: 특정 단위 갯수만큼 앞 뒤
+        // []: 현재 보고있는 페이지
+
+        // 우리가 pageNo를 사용하며
+        // 시작페이지 번호
+        // 끝페이지 번호
+        // 을 계산해 주어야 한다.
+        // 이때에는 크게 3가지 가 있다.
+
+        // 1. 현제 페이지가 3 이하일 경우
+        // 시작: 1, 끝: 5
+
+        // 2. 현재 페이지가 최대 페이지 -2 이상일 경우
+        // 시작: 최대페이지 -4, 끝: 최대페이지
+
+        // 3. 그 외
+        // 시작: 현재페이지 -2, 끝: 현재페이지 +2
+
+        // 시작 페이지
+        int startPage;
+
+        // 끝 페이지
+        int endPage;
+
+        if (maxPage < 5) { // 페이지가 5 미만인 경우
+            startPage = 1;
+            endPage = maxPage;
+        } else if (pageNo <= 3) { // 페이지가
+            startPage = 1;
+            endPage = 5;
+        } else if (pageNo >= maxPage - 2) { //
+            startPage = maxPage - 4;
+            endPage = maxPage;
+        } else { //
+            startPage = pageNo - 2;
+            endPage = pageNo + 2;
+        }
+
+        model.addAttribute("curPage", pageNo);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        List<BoardDTO> list = boardService.selectAll(pageNo);
         model.addAttribute("list", list);
 
         return "board/showAll";
@@ -173,5 +234,9 @@ public class BoardController {
 //
 //        return "redirect:/board/showAll";
 //    }
+
+
+
+
 
 }
