@@ -69,6 +69,8 @@
                         </td>
                     </tr>
                 </table>
+
+                ${replyList}
             </div>
         </div>
     </div>

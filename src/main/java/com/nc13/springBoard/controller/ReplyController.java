@@ -7,6 +7,7 @@ import com.nc13.springBoard.service.ReplyService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,6 @@ public class ReplyController {
     private ReplyService replyService;
     @Autowired
     private BoardService boardService;
-
 
     @PostMapping("insert/{boardId}")
     public String insert(ReplyDTO replyDTO, HttpSession session, @PathVariable int boardId, RedirectAttributes redirectAttributes) {
@@ -41,14 +41,14 @@ public class ReplyController {
         return "redirect:/board/showOne/" + boardId;
     }
 
-    @PostMapping("update/{replyId}")
-    public String update(ReplyDTO replyDTO, @PathVariable int replyId, HttpSession session, RedirectAttributes redirectAttributes) {
+    @PostMapping("update/{id}")
+    public String update(ReplyDTO replyDTO, @PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         UserDTO logIn = (UserDTO) session.getAttribute("logIn");
         if (logIn == null) {
             return "redirect:/";
         }
 
-        ReplyDTO origin = replyService.selectOne(replyId);
+        ReplyDTO origin = replyService.selectOne(id);
         if (origin == null) {
             redirectAttributes.addFlashAttribute("message", "유효하지 않은 댓글 번호입니다.");
             return "redirect:/showMessage";
@@ -59,10 +59,33 @@ public class ReplyController {
             return "redirect:/showMessage";
         }
 
-        replyDTO.setId(replyId);
+        replyDTO.setId(id);
         replyService.update(replyDTO);
 
         return "redirect:/board/showOne/" + origin.getBoardId();
+    }
+
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
+        UserDTO logIn = (UserDTO) session.getAttribute("logIn");
+        if (logIn == null) {
+            return "redirect:/";
+        }
+
+        ReplyDTO replyDTO = replyService.selectOne(id);
+        if (replyDTO == null) {
+            redirectAttributes.addFlashAttribute("message", "유효하지 않은 댓글 번호입니다.");
+            return "redirect:/showMessage";
+        }
+
+        if (replyDTO.getWriterId() != logIn.getId()) {
+            redirectAttributes.addFlashAttribute("message", "권한이 없습니다.");
+            return "redirect:/showMessage";
+        }
+
+        replyService.delete(id);
+
+        return "redirect:/board/showOne/" + replyDTO.getBoardId();
     }
 
 

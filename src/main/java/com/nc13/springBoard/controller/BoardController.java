@@ -1,8 +1,10 @@
 package com.nc13.springBoard.controller;
 
 import com.nc13.springBoard.model.BoardDTO;
+import com.nc13.springBoard.model.ReplyDTO;
 import com.nc13.springBoard.model.UserDTO;
 import com.nc13.springBoard.service.BoardService;
+import com.nc13.springBoard.service.ReplyService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,8 @@ public class BoardController {
 
     @Autowired
     private BoardService boardService;
+    @Autowired
+    private ReplyService replyService;
 
     @GetMapping("showAll")
     public String moveToFirstPage() {
@@ -134,7 +138,10 @@ public class BoardController {
             return "redirect:/showMessage";
         }
 
+        List<ReplyDTO> replyList = replyService.selectAll(id);
+
         model.addAttribute("boardDTO", boardDTO);
+        model.addAttribute("replyList", replyList);
 
         return "board/showOne";
         // redirect 를 붙이면 링크 속 값이 휘발되니 주의할 것
