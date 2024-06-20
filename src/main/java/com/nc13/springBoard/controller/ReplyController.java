@@ -1,0 +1,71 @@
+package com.nc13.springBoard.controller;
+
+import com.nc13.springBoard.model.ReplyDTO;
+import com.nc13.springBoard.model.UserDTO;
+import com.nc13.springBoard.service.BoardService;
+import com.nc13.springBoard.service.ReplyService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+@Controller
+@RequestMapping("/reply/")
+public class ReplyController {
+
+    @Autowired
+    private ReplyService replyService;
+    @Autowired
+    private BoardService boardService;
+
+
+    @PostMapping("insert/{boardId}")
+    public String insert(ReplyDTO replyDTO, HttpSession session, @PathVariable int boardId, RedirectAttributes redirectAttributes) {
+        UserDTO logIn = (UserDTO) session.getAttribute("logIn");
+        if (logIn == null) {
+            return "redirect:/";
+        }
+
+        if (boardService.selectOne(boardId) == null) {
+            redirectAttributes.addFlashAttribute("message", "존재하지 않는 게시물 입니다.");
+            return "redirect:/showMessage";
+        }
+
+        replyDTO.setWriterId(logIn.getId()); // 위 검증을 통과하여 로그인 한 유저 id 가 유효하니 set 해준다.
+        replyDTO.setBoardId(boardId); // 위 검증을 통과하여 게시물의 id 가 유효하니 set 해준다.
+
+
+        return "redirect:/board/showOne/" + boardId;
+    }
+
+    @PostMapping("update/{replyId}")
+    public String update(ReplyDTO replyDTO, @PathVariable int replyId, HttpSession session, RedirectAttributes redirectAttributes) {
+        UserDTO logIn = (UserDTO) session.getAttribute("logIn");
+        if (logIn == null) {
+            return "redirect:/";
+        }
+
+        ReplyDTO origin = replyService.selectOne(replyId);
+        if (origin == null) {
+            redirectAttributes.addFlashAttribute("message", "유효하지 않은 댓글 번호입니다.");
+            return "redirect:/showMessage";
+        }
+
+        if (origin.getWriterId() != logIn.getId()) {
+            redirectAttributes.addFlashAttribute("message", "권한이 없습니다.");
+            return "redirect:/showMessage";
+        }
+
+        replyDTO.setId(replyId);
+        replyService.update(replyDTO);
+
+        return "redirect:/board/showOne/" + origin.getBoardId();
+    }
+
+
+
+
+}

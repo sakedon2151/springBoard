@@ -27,6 +27,21 @@
             color: black;
             text-decoration: none;
         }
+
+        /*.paginationTr a{*/
+        /*    display: inline-block;*/
+        /*    width: 30px; height: 30px;*/
+        /*    color: #999;*/
+        /*    text-decoration: none;*/
+        /*    border: 1px solid #999;*/
+        /*    border-radius: 3px;*/
+        /*    font-size: 13px;*/
+        /*    line-height: 28px;*/
+        /*}*/
+        /*.paginationTr a:hover{*/
+        /*    color: black;*/
+        /*    background-color: #eeeeee;*/
+        /*}*/
     </style>
 </head>
 <body>
@@ -73,14 +88,46 @@
                         </c:forEach>
 
                         <tr>
-                            <td colspan="6" class="text-center">
-                                <a href="/board/showAll/1"> << </a>
-                                <a> < </a>
-                                <c:forEach var="page" begin="1" end="5">
-                                    <a href="/board/showAll/${page}">${page}</a>
-                                </c:forEach>
-                                <a> > </a>
-                                <a> >> </a>
+                            <td colspan="6">
+                                <ul class="pagination justify-content-center">
+
+                                    <li class="page-item">
+                                        <a class="page-link" href="/board/showAll/1"> ≪ </a>
+                                    </li>
+
+                                    <c:if test="${curPage > 5}">
+                                        <li class="page-item">
+                                            <a class="page-link" href="/board/showAll/${curPage - 5}"> < </a>
+                                        </li>
+                                    </c:if>
+
+                                    <c:forEach var="page" begin="${startPage}" end="${endPage}">
+                                        <c:choose>
+                                            <c:when test="${page eq curPage}">
+                                                <li class="page-item">
+                                                    <a class="page-link" href="/board/showAll/${page}">[${page}]</a>
+                                                </li>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="/board/showAll/${page}">${page}</a>
+                                                </li>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+
+                                    <c:if test="${curPage < maxPage - 5}">
+                                        <li class="page-item">
+                                            <a class="page-link" href="/board/showAll/${curPage + 5}"> > </a>
+                                        </li>
+                                    </c:if>
+
+                                    <li class="page-item">
+                                        <a class="page-link" href="/board/showAll/${maxPage}"> ≫ </a>
+                                    </li>
+
+                                </ul>
                             </td>
                         </tr>
                     </table>

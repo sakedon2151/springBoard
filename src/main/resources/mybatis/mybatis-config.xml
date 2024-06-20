@@ -11,5 +11,6 @@
         <!-- 소문자 DTO 라는 이름은 이제 다시 명시할 필요 없이 type 속성의 주소에 있는 클래스의 객체를 의미함 -->
         <typeAlias type="com.nc13.springBoard.model.UserDTO" alias="userDTO"/>
         <typeAlias type="com.nc13.springBoard.model.BoardDTO" alias="boardDTO"/>
+        <typeAlias type="com.nc13.springBoard.model.ReplyDTO" alias="replyDTO"/>
     </typeAliases>
 </configuration>
