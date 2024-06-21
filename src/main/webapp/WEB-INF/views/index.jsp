@@ -12,11 +12,28 @@
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous">
     </script>
+
+    <style>
+        .logo{}
+        .logo>img{
+            width: 50px;
+            height: 50px;
+        }
+    </style>
 </head>
 <body>
 
     <div class="container-fluid">
         <div class="main h-100">
+
+            <div class="row justify-content-center">
+                <div class="col-6 text-center">
+                    <a href="" class="logo">
+                        <img src="/logo_blue.png" alt="로고 이미지">
+                    </a>
+                </div>
+            </div>
+
             <form action="/user/auth" method="post">
 
                 <div class="row justify-content-center">

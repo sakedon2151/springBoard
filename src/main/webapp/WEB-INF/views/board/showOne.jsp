@@ -15,6 +15,8 @@
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous">
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -58,7 +60,7 @@
                         <tr>
                             <td class="text-center" colspan="2">
                                 <a class="btn btn-outline-success" href="/board/update/${boardDTO.id}">수정하기</a>
-                                <a class="btn btn-outline-danger" href="/board/delete/${boardDTO.id}">삭제하기</a>
+                                <button class="btn btn-outline-danger" onclick="deleteBoard(${boardDTO.id})">삭제하기</button>
                             </td>
                         </tr>
                     </c:if>
@@ -128,5 +130,50 @@
         </div>
     </div>
 
+
+    <script>
+        function deleteBoard(id) {
+            Swal.fire({
+                title: '정말로 삭제하시겠습니까?',
+                showCancelButton: true,
+                confirmButtonText: '삭제하기',
+                cancelButtonText: '취소',
+                icon: 'warning'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: '삭제되었습니다.'
+                    }).then((result) => {
+                        location.href='/board/delete/'+id;
+                    })
+                }
+            });
+        }
+        // 화살표 함수
+        // 화살표 함수란, 우리가 함수의 선언식(이름짓기) 없이
+        // 해당 함수가 필요로 하는 파라미터만 선언하여 사용하는
+        // 함수를 화살표 함수라고 한다.
+        // 또는 익명 함수라고도 한다.
+        // 사용방법은
+        // (파라미터) => {
+        //     함수의 내용
+        // }
+        // 이 된다.
+        // 이 화살표 함수는 우리가 객체의 메소드를 정의할 때에도 사용이 가능하다.
+        // 예시:
+        let smaple = {
+            'id': '1',
+            'name': '조재영',
+
+            'priceInfo': (id, name) => {
+                console.log(id, name);
+            }
+        }
+
+        // 또한 화살표 함수를 변수에 저장하는 것도 가능하다..
+        let sameple2 = (id) => {
+            console.log(id);
+        }
+    </script>
 </body>
 </html>

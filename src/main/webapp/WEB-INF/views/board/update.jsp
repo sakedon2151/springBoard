@@ -15,6 +15,7 @@
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous">
     </script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script> <%-- WYSIWYG --%>
 </head>
 <body>
 
@@ -29,7 +30,7 @@
 
             <div class="row justify-content-center">
                 <div class="col-8 mb-3">
-                    <textarea name="content" id="input_content" class="form-control" placeholder="내용">${boardDTO.content}</textarea>
+                    <textarea name="content" id="input_content">${boardDTO.content}</textarea>
                 </div>
             </div>
 
@@ -42,5 +43,10 @@
         </form>
     </div>
 
+    <script>
+        ClassicEditor.create(
+                document.querySelector('#input_content')
+        ).catch(error => {console.log(error);})
+    </script>
 </body>
 </html>

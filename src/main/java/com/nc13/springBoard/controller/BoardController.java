@@ -9,12 +9,11 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.*;
 import java.util.List;
 
 @Controller
@@ -110,13 +109,33 @@ public class BoardController {
     }
 
     @PostMapping("write")
-    public String write(HttpSession session, BoardDTO boardDTO) {
+    public String write(HttpSession session, BoardDTO boardDTO, MultipartFile[] file) { // MultipartFile 컨트롤러로 들어오는 파일에 관한 파라미터입니다. 여러 파일을 받기 위해 파라미터를 배열로 등록함
         UserDTO logIn = (UserDTO) session.getAttribute("logIn");
         if (logIn == null) {
             return "redirect:/";
         }
         boardDTO.setWriterId(logIn.getId());
-        boardService.insert(boardDTO);
+
+        // 원래라면 프로젝트 내부로 경로를 잡으려 했지만 오류로 인하여 PC 내부로 경로를 잡았다.
+        String path = "c:\\uploads";
+
+        // mkdir() 메서드는 폴더를 생성하는 메서드 입니다. mkdirs() 메서드는 해당 경로까지 없는 폴더를 전부 만들어서 경로를 잡습니다.
+        File pathDir = new File(path);
+        if (!pathDir.exists()) { // 해당 경로에 이미 중복되는 폴더가 존재하는지 확인. 덮어씌우는 문제를 발생하지 않도록 존재하지 않는 경우에만 폴더를 생성
+            pathDir.mkdirs();
+        }
+
+        // getOriginalFilename() 메서드는 사용자가 업로드한 원본 파일 이름(명칭, 확장자)을 그대로 가져오는 메서드입니다.
+        try {
+            for (MultipartFile mf : file) {
+                File f = new File(path, mf.getOriginalFilename());
+                mf.transferTo(f);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // boardService.insert(boardDTO);
 
         return "redirect:/board/showOne/" + boardDTO.getId();
         // return "redirect:/board/showOne"; 를 이용하여 게시판으로 돌아가는 것이 아닌
@@ -241,9 +260,5 @@ public class BoardController {
 //
 //        return "redirect:/board/showAll";
 //    }
-
-
-
-
 
 }
