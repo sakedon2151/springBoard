@@ -11,10 +11,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/board/")
@@ -135,7 +142,7 @@ public class BoardController {
             e.printStackTrace();
         }
 
-        // boardService.insert(boardDTO);
+         boardService.insert(boardDTO);
 
         return "redirect:/board/showOne/" + boardDTO.getId();
         // return "redirect:/board/showOne"; 를 이용하여 게시판으로 돌아가는 것이 아닌
@@ -240,6 +247,49 @@ public class BoardController {
         boardService.delete(id);
 
         return "redirect:/board/showAll";
+    }
+
+    // 일반 컨트롤러 안에 Restful API 로써, Json 의 결과값을 리턴해야하는 경우,
+    // 맵핑 어노테이션 위에 ResponseBody 어노테이션을 붙여준다.
+    // 즉, 주소값으로 리턴하는 상황을 막고 데이터를 보내기위한 어노데이션
+    @ResponseBody
+    @PostMapping("uploads")
+    public Map<String, Object> uploads(MultipartHttpServletRequest request) {
+        Map<String, Object> resultMap = new HashMap<>();
+
+        String uploadPath = "";
+
+        // CR :
+        MultipartFile file = request.getFile("upload");
+        String fileName = file.getOriginalFilename();
+        String extension = fileName.substring(fileName.lastIndexOf("."));
+        // extension 은 파일의 확장자를 의미한다.
+        String uploadName = UUID.randomUUID() + extension;
+        // 이상한 이름의 고유한 값을 가진 파일 이름 생성
+
+        // 현재 톰캣의 주소를 찾는 메서드들
+        String realPath = request.getServletContext().getRealPath("/board/uploads/");
+        Path realDir = Paths.get(realPath);
+        if (!Files.exists(realDir)) {
+            try {
+                Files.createDirectories(realDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        File uploadFile = new File(realPath + uploadName);
+        try {
+            file.transferTo(uploadFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        uploadPath = "/board/uploads/" + uploadName;
+
+        resultMap.put("uploaded", true);
+        resultMap.put("url", uploadPath);
+        return resultMap;
     }
 
     // 해당 코드는 test 를 위해 게시글 300개를 작성합니다.

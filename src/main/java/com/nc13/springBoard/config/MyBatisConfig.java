@@ -40,6 +40,7 @@ public class MyBatisConfig {
     @Bean
     // sqlSessionTemplate = Template 구조에 Factory 값으로 초기화
     public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
+        // 리턴 다음에 바로 new 를 작성하면 파라미터로 받아온 factory 또한 인스턴스화 된다.
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 }

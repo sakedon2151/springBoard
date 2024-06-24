@@ -16,7 +16,6 @@ public class BoardService {
     // 한 페이지에 들어갈 글의 갯수
     private final int PAGE_SIZE = 20;
 
-
     @Autowired
     private SqlSession session;
 
